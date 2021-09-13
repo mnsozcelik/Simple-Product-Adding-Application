@@ -34,6 +34,7 @@
             <label>Ürün Adı</label>
             <input
               type="text"
+              v-model="product.title"
               class="form-control"
               placeholder="adını giriniz"
             />
@@ -43,6 +44,7 @@
               <label>Ürün Adeti</label>
               <input
                 type="text"
+                v-model="product.count"
                 class="form-control"
                 placeholder="adetini giriniz"
               />
@@ -51,12 +53,15 @@
               <label>Ürün Fiyatı</label>
               <input
                 type="text"
+                v-model="product.price"
                 class="form-control"
                 placeholder="fiyatını giriniz"
               />
             </div>
           </div>
-          <button class="btn btn-outline-info btn-block">Ekle!</button>
+          <button @click="addProduct" class="btn btn-outline-info btn-block">
+            Ekle!
+          </button>
         </div>
       </div>
     </div>
@@ -64,12 +69,36 @@
 </template>
 
 <script>
+import { eventBus } from "../main";
 export default {
-    data() {
-        return{
-            product : {},
-        }
-    }
+  data() {
+    return {
+      product: {
+        title: null,
+        count: null,
+        price: null,
+        totalPrice: null,
+        selectedImage: null,
+      },
+    };
+  },
+  methods: {
+    onChange(e) {
+      const file = e.target.files[0];
+      this.product.selectedImage = URL.createObjectURL(file);
+    },
+    addProduct() {
+      this.product.totalPrice = this.product.count * this.product.price;
+      eventBus.$emit("productAdded", this.product);
+      this.product = {
+        title: null,
+        count: null,
+        price: null,
+        totalPrice: null,
+        selectedImage: null,
+      };
+    },
+  },
 };
 </script>
 
